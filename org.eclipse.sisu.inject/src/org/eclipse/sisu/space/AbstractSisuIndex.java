@@ -16,10 +16,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Skeleton class that generates a qualified class index.
@@ -40,7 +40,7 @@ abstract class AbstractSisuIndex
     // Implementation fields
     // ----------------------------------------------------------------------
 
-    private final Map<Object, Set<String>> index = new LinkedHashMap<Object, Set<String>>();
+    private final Map<Object, SortedSet<String>> index = new LinkedHashMap<Object, SortedSet<String>>();
 
     // ----------------------------------------------------------------------
     // Common methods
@@ -54,7 +54,7 @@ abstract class AbstractSisuIndex
      */
     protected final synchronized void addClassToIndex( final Object anno, final Object clazz )
     {
-        Set<String> table = index.get( anno );
+        SortedSet<String> table = index.get( anno );
         if ( null == table )
         {
             table = readTable( anno );
@@ -68,7 +68,7 @@ abstract class AbstractSisuIndex
      */
     protected final synchronized void flushIndex()
     {
-        for ( final Entry<Object, Set<String>> entry : index.entrySet() )
+        for ( final Entry<Object, SortedSet<String>> entry : index.entrySet() )
         {
             writeTable( entry.getKey(), entry.getValue() );
         }
@@ -120,9 +120,9 @@ abstract class AbstractSisuIndex
      * @param name The table name
      * @return Table elements
      */
-    private Set<String> readTable( final Object name )
+    private SortedSet<String> readTable( final Object name )
     {
-        final Set<String> table = new LinkedHashSet<String>();
+        final SortedSet<String> table = new TreeSet<String>();
         try
         {
             final BufferedReader reader = new BufferedReader( getReader( INDEX_FOLDER + name ) );
@@ -151,7 +151,7 @@ abstract class AbstractSisuIndex
      * @param name The table name
      * @param table The elements
      */
-    private void writeTable( final Object name, final Set<String> table )
+    private void writeTable( final Object name, final SortedSet<String> table )
     {
         try
         {
